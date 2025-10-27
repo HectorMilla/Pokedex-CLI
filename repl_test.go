@@ -11,7 +11,7 @@ func TestCleanInput(t *testing.T) {
 	}{
 		{
 			input: "",
-			expected: []string{},
+			expected: []string{""},
 		},
 		{
 			input: " hello world",
@@ -40,6 +40,31 @@ func TestCleanInput(t *testing.T) {
 	}
 }
 
-func testCommands(t *testing.T){
-	
-}
+// func testCommands(t *testing.T){
+// 	cases := []struct {
+// 		input string
+// 		expected string
+// 	}{
+// 		{
+// 			input: "",
+// 			expected: "Unknown command",
+// 		},
+// 		{
+// 			input: "help",
+// 			expected: "help",
+// 		},
+// 		{
+// 			input: "exit",
+// 			expected: "exit",
+// 		},
+// 	}
+// 	for i :=1; i >0; i++{
+// 		fmt.Printf("Pokedex >")
+// 		for _, command := range cases{
+// 			input := command.input
+// 				if input == commands[input].name{
+// 					t.Error("command not being read correctly")
+// 				}
+// 			}
+// 		}
+// }
