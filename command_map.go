@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func commandMap(urls *config) {
 	if urls.next == "" {

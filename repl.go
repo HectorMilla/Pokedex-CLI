@@ -11,6 +11,7 @@ func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Printf("Pokedex >")
+
 		for scanner.Scan() {
 			result := CleanInput(scanner.Text())[0]
 			if _, ok := commands[result]; ok {
@@ -66,3 +67,5 @@ func init() {
 		},
 	}
 }
+
+//figure out how to use the cache in the program
