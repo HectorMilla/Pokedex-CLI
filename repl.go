@@ -15,6 +15,12 @@ type config struct {
 	previous      string
 }
 
+type cliCommand struct {
+	name        string
+	description string
+	callback    func(cfg *config, additionalCommands []string) error
+}
+
 func StartRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -48,12 +54,6 @@ func CleanInput(text string) []string {
 	return listOfWords
 }
 
-type cliCommand struct {
-	name        string
-	description string
-	callback    func(cfg *config, additionalCommands []string) error
-}
-
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"help": {
@@ -78,8 +78,13 @@ func getCommands() map[string]cliCommand {
 		},
 		"explore": {
 			name:        "explore",
-			description: "Shows list of pokemon located at given location",
+			description: "Shows list of pokemon located at given location using \"explore <location name>\"",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "catch a pokemon using \"catch <pokemon name>\"",
+			callback:    commandCatch,
 		},
 	}
 }

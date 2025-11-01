@@ -72,6 +72,42 @@ func (c *Client) GetPokemonAtLocation(location string) (types.PokemonEncounters,
 	if err := json.Unmarshal(body, &pokemonList); err != nil {
 		return pokemonList, fmt.Errorf("error decoding json: %v", err)
 	}
-
+	c.cache.Add(url, body)
 	return pokemonList, nil
+}
+
+func (c *Client) GetPokemon(pokemonName string) (types.Pokemon, error) {
+	var pokemon types.Pokemon
+	url := baseURL + "/pokemon/" + pokemonName
+
+	if data, ok := c.cache.Get(url); ok {
+		if err := json.Unmarshal(data, &pokemon); err != nil {
+			return pokemon, fmt.Errorf("error decoding json")
+		}
+		return pokemon, nil
+	}
+
+	res, err := http.Get(url)
+
+	if err != nil {
+		return pokemon, fmt.Errorf("error getting pokemon information %v", err)
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusNotFound {
+		return pokemon, fmt.Errorf("pokemon \"%v\" not found", pokemonName)
+	}
+	if res.StatusCode != http.StatusOK {
+		return pokemon, fmt.Errorf("unexpected http status code: %v", res.StatusCode)
+	}
+
+	body, _ := io.ReadAll(res.Body)
+
+	if err := json.Unmarshal(body, &pokemon); err != nil {
+		return pokemon, fmt.Errorf("error decoding json")
+	}
+
+	c.cache.Add(url, body)
+	return pokemon, nil
 }

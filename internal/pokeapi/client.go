@@ -1,19 +1,25 @@
 package pokeapi
 
 import (
-	"github.com/HectorMilla/Pokedex-CLI/internal/pokecache"
 	"net/http"
 	"time"
+
+	"github.com/HectorMilla/Pokedex-CLI/internal/pokecache"
+	"github.com/HectorMilla/Pokedex-CLI/internal/types"
 )
 
 type Client struct {
-	cache      pokecache.Cache
-	httpClient http.Client
+	cache       pokecache.Cache
+	userPokedex Pokedex
+	httpClient  http.Client
 }
 
 func NewClient(timeout, cacheInterval time.Duration) Client {
 	return Client{
 		cache: pokecache.NewCache(cacheInterval),
+		userPokedex: Pokedex{
+			Pokemon: make(map[string]types.Pokemon),
+		},
 		httpClient: http.Client{
 			Timeout: timeout,
 		},
