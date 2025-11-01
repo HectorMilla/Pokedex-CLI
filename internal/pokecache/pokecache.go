@@ -1,7 +1,6 @@
 package pokecache
 
 import (
-	"github.com/HectorMilla/Pokedex-CLI/internal/types"
 	"sync"
 	"time"
 )
@@ -21,19 +20,19 @@ func NewCache(interval time.Duration) Cache {
 	return c
 }
 
-func (c *Cache) Add(key string, val types.LocationArea) {
+func (c *Cache) Add(key string, val []byte) {
 	newEntry := cacheEntry{time.Now(), val}
 	c.mux.Lock()
 	c.cache[key] = newEntry
 	c.mux.Unlock()
 }
 
-func (c *Cache) Get(key string) (types.LocationArea, bool) {
+func (c *Cache) Get(key string) ([]byte, bool) {
 	c.mux.Lock()
 	entry, exist := c.cache[key]
 	c.mux.Unlock()
 	if !exist {
-		return types.LocationArea{}, exist
+		return []byte{}, exist
 	}
 	return entry.val, exist
 }
@@ -51,5 +50,5 @@ func (c *Cache) reapLoop(time <-chan time.Time) {
 
 type cacheEntry struct {
 	createdAt time.Time
-	val       types.LocationArea
+	val       []byte
 }

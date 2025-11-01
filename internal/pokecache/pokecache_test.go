@@ -2,14 +2,12 @@ package pokecache
 
 import (
 	"testing"
-
-	"github.com/HectorMilla/Pokedex-CLI/internal/types"
 )
 
 func TestCacheBasic(t *testing.T) {
 	c := Cache{cache: make(map[string]cacheEntry)}
 	key := "test-url"
-	val := types.LocationArea{Count: 1}
+	var val []byte
 	c.Add(key, val)
 
 	// Test retrieval
@@ -17,8 +15,8 @@ func TestCacheBasic(t *testing.T) {
 	if !ok {
 		t.Errorf("Expected key %q to be present in cache", key)
 	}
-	if got.Count != val.Count {
-		t.Errorf("Expected value %v, got %v", val.Count, got.Count)
+	if len(got) != len(val) {
+		t.Errorf("Expected value %v, got %v", len(val), len(got))
 	}
 
 	// Test missing key
