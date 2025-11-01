@@ -5,14 +5,15 @@ import (
 	"strings"
 )
 
-func commandMapB(urls *config) {
-	if urls.previous == "(0x0,0x0)" || !strings.Contains(urls.previous, "http") {
-		fmt.Println("Use command map to get a list of locations")
-		return
+func commandMapB(cfg *config) error {
+	if cfg.previous == "(0x0,0x0)" || !strings.Contains(cfg.previous, "http") {
+		return fmt.Errorf("use command map to get a list of locations")
 	}
-	locationArea, _ := getPokeLocations(urls.previous)
+	locationArea, _ := cfg.pokeapiClient.GetPokeLocations(&cfg.previous)
+	cfg.next = locationArea.Next
+	cfg.previous = fmt.Sprint(locationArea.Previous)
 	for _, area := range locationArea.Results {
 		fmt.Println(area.Name)
 	}
-
+	return nil
 }

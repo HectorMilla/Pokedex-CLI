@@ -5,29 +5,44 @@ import (
 	"fmt"
 	"os"
 	s "strings"
+
+	"github.com/HectorMilla/Pokedex-CLI/internal/pokeapi"
 )
 
-func startRepl() {
+type config struct {
+	pokeapiClient pokeapi.Client
+	next          string
+	previous      string
+}
+
+func StartRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Printf("Pokedex >")
+		scanner.Scan()
 
-		for scanner.Scan() {
-			result := CleanInput(scanner.Text())[0]
-			if _, ok := commands[result]; ok {
-				commands[result].callback()
-			} else {
-				fmt.Println("Unknown command")
-			}
-			break
+		input := CleanInput(scanner.Text())
+		if len(input) == 0 {
+			continue
 		}
+		commandName := input[0]
+		command, exist := getCommands()[commandName]
+
+		if exist {
+			err := command.callback(cfg)
+			if err != nil {
+				fmt.Println(err)
+			}
+			continue
+		} else {
+			fmt.Println("Unknown command")
+			continue
+		}
+
 	}
 }
 
 func CleanInput(text string) []string {
-	if len(text) == 0 {
-		return []string{""}
-	}
 	inputText := s.ToLower(text)
 	listOfWords := s.Fields(inputText)
 	return listOfWords
@@ -36,15 +51,11 @@ func CleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func()
+	callback    func(*config) error
 }
 
-var commands map[string]cliCommand
-var urls config
-
-func init() {
-
-	commands = map[string]cliCommand{
+func getCommands() map[string]cliCommand {
+	return map[string]cliCommand{
 		"help": {
 			name:        "help",
 			description: "Show pokedex usage",
@@ -58,14 +69,12 @@ func init() {
 		"map": {
 			name:        "map",
 			description: "List of pokemon location areas",
-			callback:    func() { commandMap(&urls) },
+			callback:    commandMap,
 		},
 		"mapb": {
 			name:        "mapb",
 			description: "List previous pokemon locations",
-			callback:    func() { commandMapB(&urls) },
+			callback:    commandMapB,
 		},
 	}
 }
-
-//figure out how to use the cache in the program
