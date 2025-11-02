@@ -20,6 +20,7 @@ func commandCatch(cfg *config, additionalCommands []string) error {
 	randomNumber := rand.Intn(800) + 1
 	if pokemon.BaseExperience <= randomNumber {
 		fmt.Printf("%v was caught!\n", pokemon.Name)
+		fmt.Println("You may now inspect it with the inspect command.")
 		cfg.pokeapiClient.AddPokemonToPokedex(pokemon)
 	} else {
 		fmt.Printf("%v escaped!\n", pokemon.Name)

@@ -14,5 +14,5 @@ func NewPokedex() Pokedex {
 }
 
 func (c *Client) AddPokemonToPokedex(pokemon types.Pokemon) {
-	c.userPokedex.Pokemon[pokemon.Name] = pokemon
+	c.UserPokedex.Pokemon[pokemon.Name] = pokemon
 }
